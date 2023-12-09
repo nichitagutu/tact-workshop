@@ -5,9 +5,10 @@
         "start": "blueprint run",
         "build": "blueprint build",
         "test": "npm run build; jest --verbose",
-        "test:1": "npm run build; jest --verbose -i HelloWorld.spec.ts",
-        "test:2": "npm run build; jest --verbose -i Counter.spec.ts",
-        "test:3": "npm run build; jest --verbose -i Calculator.spec.ts"
+        "test:1": "npm run build helloWorld; jest --verbose -i HelloWorld.spec.ts",
+        "test:2": "npm run build counter; jest --verbose -i Counter.spec.ts",
+        "test:3": "npm run build calculator; jest --verbose -i Calculator.spec.ts",
+        "test:4": "npm run build wallet; jest --verbose -i Wallet.spec.ts"
     },
     "devDependencies": {
         "@ton/blueprint": "^0.14.2",

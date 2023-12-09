@@ -78,6 +78,10 @@ describe('Calculator', () => {
             const resultNumber = parseIntFromBody(lastTransactionBody!);
 
             expect(resultNumber).toBe(a + b);
+
+            const lastResult = await calculatorContract.getGetLastResult();
+
+            expect(lastResult).toBe(a + b);
         }
     });
 
@@ -120,6 +124,10 @@ describe('Calculator', () => {
             const resultNumber = parseIntFromBody(lastTransactionBody!);
 
             expect(resultNumber).toBe(a - b);
+
+            const lastResult = await calculatorContract.getGetLastResult();
+
+            expect(lastResult).toBe(a - b);
         }
     });
 
@@ -129,7 +137,7 @@ describe('Calculator', () => {
             const a = BigInt(Math.floor(Math.random() * 100));
             const b = BigInt(Math.floor(Math.random() * 100));
 
-            console.log(`greater then ${i + 1}/${3}\n${a} > ${b} = ${a > b}`);
+            console.log(`greater then ${i + 1}/${3}\n${a} > ${b} is ${a > b}`);
 
             const comparer = await blockchain.treasury('comparer');
             const increaseResult = await calculatorContract.send(

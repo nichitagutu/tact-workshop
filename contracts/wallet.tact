@@ -1,10 +1,34 @@
 import "@stdlib/deploy";
 
+/*
+    +------------------------+------+-------------------------------------------------------+
+    | Name                   | Mode | Description                                           |
+    +------------------------+------+-------------------------------------------------------+
+    | SendPayGasSeparately   | 1    | Pay transfer fees separately from the message value   |
+    +------------------------+------+-------------------------------------------------------+
+    | SendIgnoreErrors       | 2    | Ignore any errors arising while processing this       |
+    |                        |      | message during the action phase                       |
+    +------------------------+------+-------------------------------------------------------+
+    | SendDestroyIfZero      | 32   | Current account must be destroyed if its resulting    |
+    |                        |      | balance is zero (often used with Mode 128)            |
+    +------------------------+------+-------------------------------------------------------+
+    | SendRemainingValue     | 64   | Carry all the remaining value of the inbound message  |
+    |                        |      | in addition to the value initially indicated in the   |
+    |                        |      | new message                                           |
+    +------------------------+------+-------------------------------------------------------+
+    | SendRemainingBalance   | 128  | Carry all the remaining balance of the current smart  |
+    |                        |      | contract instead of the value originally indicated in |
+    |                        |      | the message                                           |
+    +------------------------+------+-------------------------------------------------------+
+*/
+
+// task: implement a receive handler that will allow to send funds to the given address. amount and receiver address (to) should be passed in a message
+
 message Withdraw {
     amount: Int as coins;
 }
 
-contract SendCoins with Deployable {
+contract Wallet with Deployable {
 
     const MinTonForStorage: Int = ton("0.01"); // enough for 1 KB of storage for 2.5 years
     deployer: Address;
@@ -36,19 +60,6 @@ contract SendCoins with Deployable {
             to: sender(),
             bounce: true,
             value: myBalance() - context().value - self.MinTonForStorage,
-            mode: SendRemainingValue + SendIgnoreErrors
-        });
-    }
-
-    // this will withdraw a specific amount but leave 0.01 for storage rent costs
-    receive(msg: Withdraw) {
-        require(sender() == self.deployer, "Only deployer is allowed to withdraw");
-        let amount: Int = min(msg.amount, myBalance() - context().value - self.MinTonForStorage);
-        require(amount > 0, "Insufficient balance");
-        send(SendParameters{
-            to: sender(),
-            bounce: true,
-            value: amount,
             mode: SendRemainingValue + SendIgnoreErrors
         });
     }
